@@ -170,7 +170,11 @@ public class Games.RetroRunner : Object, Runner {
 		options = new Retro.Options ();
 		log = new RetroLog ();
 
-		input.set_controller_device (0, gamepad);
+		var g = new LinuxGamepad ("/dev/input/js0");
+		var rg = new RetroGamepad (g);
+
+		input.set_controller_device (0, rg);
+//		input.set_controller_device (0, gamepad);
 		input.set_keyboard (keyboard);
 
 		core.variables_interface = options;

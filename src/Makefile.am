@@ -53,7 +53,25 @@ gnome_games_SOURCES = \
 	dummy/dummy-icon.vala \
 	dummy/dummy-runner.vala \
 	\
+	gamepad/core/gamepad-mapping.vala \
+	gamepad/core/filter-type.vala \
+	gamepad/core/input-type.vala \
+	gamepad/core/input-mapping.vala \
+	gamepad/events.vala \
+	gamepad/gamepad.vala \
+	gamepad/gamepad-button.vala \
+	gamepad/gamepad-mapping-type.vala \
+	gamepad/linux/linux-gamepad.vala \
+	gamepad/linux/linux-joystick.vala \
+	gamepad/linux/linux-joystick-event.vala \
+	gamepad/linux/linux-joystick-mapping.vala \
+	gamepad/mapping-doc.vala \
+	gamepad/mapping-node.vala \
+	gamepad/standard-gamepad-axis.vala \
+	gamepad/standard-gamepad-button.vala \
+	\
 	retro/retro-error.vala \
+	retro/retro-gamepad.vala \
 	retro/retro-log.vala \
 	retro/retro-runner.vala \
 	\
@@ -87,6 +105,9 @@ gnome_games_SOURCES = \
 	utils/generic-title.vala \
 	utils/generic-uid.vala \
 	utils/grep.vala \
+	utils/xml-doc.vala \
+	utils/xml-error.vala \
+	utils/xml-node.vala \
 	\
 	config.vala \
 	credits.vala \
@@ -95,10 +116,14 @@ gnome_games_SOURCES = \
 	$(NULL)
 
 gnome_games_VALAFLAGS = \
+	--vapidir gamepad/vapi \
 	--target-glib=@GLIB_MIN_VERSION@ \
 	--pkg gio-2.0 \
 	--pkg glib-2.0 \
 	--pkg gtk+-3.0 \
+	--pkg libxml-2.0 \
+	--pkg linux-joystick \
+	--pkg posix \
 	--pkg tracker-sparql-1.0 \
 	--pkg retro-gobject-0.6 \
 	--pkg retro-gtk-0.6 \
