@@ -55,6 +55,12 @@ public class Games.CommandRunner : Object, Runner {
 	public void resume () throws Error {
 	}
 
+	public void load_from_store (int index) throws Error {
+	}
+
+	public void save_to_store (int index) throws Error {
+	}
+
 	public void pause () {
 	}
 
@@ -63,4 +69,3 @@ public class Games.CommandRunner : Object, Runner {
 		stopped ();
 	}
 }
-

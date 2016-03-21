@@ -8,5 +8,7 @@ public interface Games.Runner : Object {
 	public abstract Gtk.Widget get_display ();
 	public abstract void start () throws Error;
 	public abstract void resume () throws Error;
+	public abstract void load_from_store (int index) throws Error;
+	public abstract void save_to_store (int index) throws Error;
 	public abstract void pause ();
 }

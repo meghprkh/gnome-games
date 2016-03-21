@@ -233,6 +233,28 @@ public class Games.RetroRunner : Object, Runner {
 		FileUtils.set_data (save_path, save);
 	}
 
+	public void save_to_store (int index) throws Error {
+		/*loop.stop();*/
+		var path = @"$save_path$index";
+		stdout.printf(@"save $index \n$path\n");
+		var size = core.serialize_size ();
+		stdout.printf(@"save $index \n\n");
+		var buffer = new uint8[size];
+		stdout.printf(@"save $index \n\n");
+
+		if (!core.serialize (buffer))
+			throw new RetroError.COULDNT_WRITE_SNAPSHOT ("Couldn't write snapshot.");
+		/*loop.start();*/
+		stdout.printf(@"save $index \n\n");
+
+		var dir = Application.get_saves_dir ();
+		try_make_dir (dir);
+		stdout.printf(@"save $index \n\n");
+
+		FileUtils.set_data (path, buffer);
+		stdout.printf("Hurray2\n");
+	}
+
 	private void load_ram () throws Error {
 		if (!FileUtils.test (save_path, FileTest.EXISTS))
 			return;
@@ -245,6 +267,24 @@ public class Games.RetroRunner : Object, Runner {
 			warning ("Unexpected RAM data size: got %lu, expected %lu\n", data.length, expected_size);
 
 		core.set_memory (Retro.MemoryType.SAVE_RAM, data);
+	}
+
+	public void load_from_store (int index) throws Error {
+		var path = @"$save_path$index";
+		stdout.printf(@"Load from store $path\n");
+
+		if (!FileUtils.test (path, FileTest.EXISTS))
+			return;
+
+		uint8[] data = null;
+		FileUtils.get_data (path, out data);
+
+		var expected_size = core.serialize_size ();
+		if (data.length != expected_size)
+			warning ("Unexpected serialization data size: got %lu, expected %lu\n", data.length, expected_size);
+
+		if (!core.unserialize (data))
+			throw new RetroError.COULDNT_LOAD_SNAPSHOT ("Couldn't load snapshot.");
 	}
 
 	private void save_snapshot () throws Error {
@@ -311,4 +351,3 @@ public class Games.RetroRunner : Object, Runner {
 		}
 	}
 }
-

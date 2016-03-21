@@ -33,6 +33,7 @@ private class Games.ApplicationWindow : Gtk.ApplicationWindow {
 	private Binding hb_search_binding;
 
 	private HashTable<Game, Runner> runners;
+	private Runner cur;
 
 	public ApplicationWindow (ListModel collection) {
 		content_box.collection = collection;
@@ -75,6 +76,18 @@ private class Games.ApplicationWindow : Gtk.ApplicationWindow {
 		if (ui_state == UiState.COLLECTION && content_box.search_bar_handle_event (event))
 			return true;
 
+		var runner = cur;
+		if (ui_state == UiState.DISPLAY && runner.can_resume &&
+			event.keyval >= Gdk.Key.F1 && event.keyval <= Gdk.Key.F12) {
+			var index = (int) (event.keyval - Gdk.Key.F1 + 1);
+			if ((event.state & default_modifiers) == Gdk.ModifierType.SHIFT_MASK) {
+				stdout.printf("Yay\n");
+				runner.save_to_store(index);
+				stdout.printf("Yay2\n");
+			}
+			else runner.load_from_store(index);
+		}
+
 		return false;
 	}
 
@@ -93,6 +106,7 @@ private class Games.ApplicationWindow : Gtk.ApplicationWindow {
 
 		header_bar.game_title = game.name;
 		content_box.runner = runner;
+		cur = runner;
 		ui_state = UiState.DISPLAY;
 
 		var resume = false;
