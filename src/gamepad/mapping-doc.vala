@@ -16,10 +16,11 @@ private class Games.MappingDoc: XmlDoc {
 
 	public MappingNode? get_mapping_for_gamepad_id (string id) {
 		var expr = "/gamepads/gamepad[@id = \"" + id + "\"]/mapping";
+		var default_expr = "/gamepads/gamepad[@id = \"default\"]/mapping";
 
 		Xml.Node* node = lookup_node (expr);
 		if (node == null)
-			return null;
+			node = lookup_node (default_expr);
 
 		return new MappingNode (this, node);
 	}

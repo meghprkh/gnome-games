@@ -1,5 +1,5 @@
 <gamepads>
-  <gamepad id="Microsoft X-Box 360 pad">
+  <gamepad id="default">
     <mapping type="standard">
       <button index="0">
         <button index="0"/>
