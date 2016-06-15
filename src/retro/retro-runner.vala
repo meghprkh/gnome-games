@@ -155,6 +155,8 @@ public class Games.RetroRunner : Object, Runner {
 		is_initialized = true;
 	}
 
+	private LibGamepad.GamepadMonitor gm;
+	private LibGamepad.Gamepad g;
 	private void prepare_core (string module_basename, string uri) throws Error {
 		var module_path = Retro.search_module (module_basename);
 		var module = File.new_for_path (module_path);
@@ -170,7 +172,18 @@ public class Games.RetroRunner : Object, Runner {
 		options = new Retro.Options ();
 		log = new RetroLog ();
 
-		input.set_controller_device (0, gamepad);
+		gm = new LibGamepad.GamepadMonitor();
+		g = new LibGamepad.Gamepad();
+		gm.on_plugin.connect((guid, name) => {
+			print(@"GM Plugged in $(guid.to_string()) - $name\n");
+			g.open(guid);
+		});
+		gm.foreach_gamepad((guid, name) => {
+			print(@"Initial plugged in $guid - $name\n");
+			g.open (guid);
+		});
+		var rg = new RetroGamepad(g);
+		input.set_controller_device (0, rg);
 		input.set_keyboard (keyboard);
 
 		core.variables_interface = options;
@@ -397,4 +410,3 @@ public class Games.RetroRunner : Object, Runner {
 		}
 	}
 }
-

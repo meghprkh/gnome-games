@@ -55,6 +55,7 @@ gnome_games_SOURCES = \
 	\
 	retro/retro-error.vala \
 	retro/retro-log.vala \
+  retro/retro-gamepad.vala \
 	retro/retro-runner.vala \
 	\
 	tracker/mime-type-tracker-query.vala \
@@ -101,7 +102,8 @@ gnome_games_VALAFLAGS = \
 	--pkg gtk+-3.0 \
 	--pkg tracker-sparql-1.0 \
 	--pkg retro-gobject-0.6 \
-	--pkg retro-gtk-0.6 \
+  --pkg retro-gtk-0.6 \
+	--pkg LibGamepad \
 	--gresources $(gresource_file) \
 	--vapi $(vapi_file) \
 	-H $(header_file) \
