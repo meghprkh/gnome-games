@@ -173,7 +173,8 @@ public class Games.RetroRunner : Object, Runner {
 
 		int port_number = 0;
 		gamepad_monitor.foreach_gamepad((gamepad) => {
-			input.set_controller_device (port_number++, new RetroGamepad(gamepad));
+			if (gamepad.mapped)
+				input.set_controller_device (port_number++, new RetroGamepad(gamepad));
 		});
 		input.set_keyboard (keyboard);
 
