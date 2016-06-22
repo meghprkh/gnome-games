@@ -60,7 +60,7 @@ gnome_games_SOURCES = \
 	gamepad/drivers/linux/raw-gamepad.vala \
 	gamepad/gamepad-monitor.vala \
 	gamepad/gamepad.vala \
-	gamepad/guid.vala \
+	gamepad/helpers.vala \
 	gamepad/input-type.vala \
 	gamepad/mapping-helpers.vala \
 	gamepad/mappings.vala \

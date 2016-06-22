@@ -6,35 +6,41 @@ private class LibGamepad.LinuxRawGamepadMonitor : Object, RawGamepadMonitor {
 		client.uevent.connect(udev_client_callback);
 	}
 
-	public delegate void ForeachGamepadCallback(string identifier, Guid guid, string? raw_name = null);
-	public void foreach_gamepad (ForeachGamepadCallback cb) {
+	public delegate void RawGamepadCallback (RawGamepad raw_gamepad);
+	public void foreach_gamepad (RawGamepadCallback cb) {
 		client.query_by_subsystem("input").foreach((dev) => {
-			if (dev.get_device_file() == null) return;
+			if (dev.get_device_file () == null)
+				return;
 			var identifier = dev.get_device_file();
 			if ((dev.has_property("ID_INPUT_JOYSTICK") && dev.get_property("ID_INPUT_JOYSTICK") == "1") ||
 				(dev.has_property(".INPUT_CLASS") && dev.get_property(".INPUT_CLASS") == "joystick")) {
-				var fd = Posix.open (identifier, Posix.O_RDONLY | Posix.O_NONBLOCK);
-				if (fd < 0) return;
-				var evdev = new Libevdev.Evdev();
-				if (evdev.set_fd(fd) < 0) return;
-				cb (identifier, LibGamepad.LinuxGuidHelpers.from_dev(evdev), evdev.name);
+				RawGamepad raw_gamepad;
+				try {
+					raw_gamepad = new LinuxRawGamepad (identifier);
+				} catch (FileError err) {
+					return;
+				}
+				cb (raw_gamepad);
 			}
 		});
 	}
 
 	private void udev_client_callback (string action, GUdev.Device dev) {
-		if (dev.get_device_file() == null) return;
+		if (dev.get_device_file () == null)
+			return;
 		var identifier = dev.get_device_file();
 		if ((dev.has_property("ID_INPUT_JOYSTICK") && dev.get_property("ID_INPUT_JOYSTICK") == "1") ||
 			(dev.has_property(".INPUT_CLASS") && dev.get_property(".INPUT_CLASS") == "joystick")) {
 			if (action == "add") {
-				var fd = Posix.open (identifier, Posix.O_RDONLY | Posix.O_NONBLOCK);
-				if (fd < 0) return;
-				var evdev = new Libevdev.Evdev();
-				if (evdev.set_fd(fd) < 0) return;
-				on_plugin (identifier, LibGamepad.LinuxGuidHelpers.from_dev(evdev), evdev.name);
+				RawGamepad raw_gamepad;
+				try {
+					raw_gamepad = new LinuxRawGamepad (identifier);
+				} catch (FileError err) {
+					return;
+				}
+				gamepad_plugged (raw_gamepad);
 			} else if (action == "remove") {
-				on_unplug (identifier);
+				gamepad_unplugged (identifier);
 			}
 		}
 	}

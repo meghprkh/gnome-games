@@ -28,7 +28,6 @@ public class Games.RetroRunner : Object, Runner {
 	private RetroGtk.CairoDisplay video;
 	private RetroGtk.PaPlayer audio;
 	private LibGamepad.GamepadMonitor gamepad_monitor;
-	private LibGamepad.Gamepad gamepad;
 	private RetroGtk.Keyboard keyboard;
 	private RetroGtk.InputDeviceManager input;
 	private Retro.Options options;
@@ -141,9 +140,6 @@ public class Games.RetroRunner : Object, Runner {
 		video.visible = true;
 
 		gamepad_monitor = new LibGamepad.GamepadMonitor();
-		gamepad = new LibGamepad.Gamepad();
-		gamepad_monitor.on_plugin.connect((guid, name) => gamepad.open(guid));
-		gamepad_monitor.foreach_gamepad((guid, name) => gamepad.open(guid));
 
 		keyboard = new RetroGtk.Keyboard (widget);
 
@@ -175,7 +171,10 @@ public class Games.RetroRunner : Object, Runner {
 		options = new Retro.Options ();
 		log = new RetroLog ();
 
-		input.set_controller_device (0, new RetroGamepad(gamepad));
+		int port_number = 0;
+		gamepad_monitor.foreach_gamepad((gamepad) => {
+			input.set_controller_device (port_number++, new RetroGamepad(gamepad));
+		});
 		input.set_keyboard (keyboard);
 
 		core.variables_interface = options;

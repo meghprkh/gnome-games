@@ -11,11 +11,14 @@ public class LibGamepad.Mappings {
 	private static void init_if_not () {
 		if (inited == null || inited == false) {
 			inited = true;
-			if (names == null) names = new HashTable<string, string> (str_hash, str_equal);
-			if (mappings == null) mappings = new HashTable<string, string> (str_hash, str_equal);
+			if (names == null)
+				names = new HashTable<string, string> (str_hash, str_equal);
+			if (mappings == null)
+				mappings = new HashTable<string, string> (str_hash, str_equal);
 			Mappings.add_from_resource ("/org/gnome/Games/gamepads/gamecontrollerdb.txt");
 		}
 	}
+
 
 	/**
 	 * Adds mappings from a file
@@ -40,12 +43,12 @@ public class LibGamepad.Mappings {
 
 	/**
 	 * Adds mappings from an InputStream
-	 * @param is          The input stream
+	 * @param input_stream          The input stream
 	 */
-	public static void add_from_input_stream (InputStream is) {
+	public static void add_from_input_stream (InputStream input_stream) {
 		init_if_not ();
 
-		var ds = new DataInputStream (is);
+		var ds = new DataInputStream (input_stream);
 		var str = ds.read_line();
 		while (str != null) {
 			add_mapping(str);
@@ -53,13 +56,15 @@ public class LibGamepad.Mappings {
 		}
 	}
 
+
 	/**
 	 * Adds a mapping from a string (only one gamepad)
 	 */
 	public static void add_mapping (string str) {
 		init_if_not ();
 
-		if (str == "" || str[0] == '#') return;
+		if (str == "" || str[0] == '#')
+			return;
 
 		if (str.index_of ("platform") == -1 || str.index_of ("platform:Linux") != -1) {
 			var split = str.split(",", 3);
@@ -68,23 +73,25 @@ public class LibGamepad.Mappings {
 		}
 	}
 
+
 	/**
 	 * Gets the name of a gamepad from the database
 	 * @param  guid          The guid of the wanted gamepad
 	 * @return The name if present in the database
 	 */
-	public static string? get_name (Guid guid) {
+	public static string? get_name (string guid) {
 		init_if_not ();
-		return names.get(guid.to_string ());
+		return names.get(guid);
 	}
+
 
 	/**
 	 * Gets the current mapping from the databse
 	 * @param  guid          The guid of the wanted gamepad
 	 * @return The mapping if present in the database
 	 */
-	public static string? get_mapping (Guid guid) {
+	public static string? get_mapping (string guid) {
 		init_if_not ();
-		return mappings.get(guid.to_string ());
+		return mappings.get(guid);
 	}
 }
