@@ -28,11 +28,13 @@ public class Games.RetroRunner : Object, Runner {
 	private RetroGtk.CairoDisplay video;
 	private RetroGtk.PaPlayer audio;
 	private LibGamepad.GamepadMonitor gamepad_monitor;
-	private RetroGtk.Keyboard keyboard;
+	private RetroGtk.VirtualGamepad keyboard;
 	private RetroGtk.InputDeviceManager input;
 	private Retro.Options options;
 	private RetroLog log;
 	private Retro.Loop loop;
+	private bool[] is_port_plugged;
+	private int keyboard_port;
 
 	private Gtk.EventBox widget;
 
@@ -141,7 +143,7 @@ public class Games.RetroRunner : Object, Runner {
 
 		gamepad_monitor = new LibGamepad.GamepadMonitor();
 
-		keyboard = new RetroGtk.Keyboard (widget);
+		keyboard = new RetroGtk.VirtualGamepad (widget);
 
 		prepare_core (module_basename, uri);
 		core.shutdown.connect (on_shutdown);
@@ -171,12 +173,19 @@ public class Games.RetroRunner : Object, Runner {
 		options = new Retro.Options ();
 		log = new RetroLog ();
 
-		int port_number = 0;
-		gamepad_monitor.foreach_gamepad((gamepad) => {
-			if (gamepad.mapped)
-				input.set_controller_device (port_number++, new RetroGamepad(gamepad));
+		gamepad_monitor.foreach_gamepad ((gamepad) => {
+			if (gamepad.mapped) {
+				var port = is_port_plugged.length;
+				is_port_plugged += true;
+				input.set_controller_device (port, new RetroGamepad (gamepad));
+				gamepad.unplugged.connect (() => handle_gamepad_unplugged (port));
+			}
 		});
-		input.set_keyboard (keyboard);
+
+		keyboard_port = is_port_plugged.length;
+		is_port_plugged += true;
+		input.set_controller_device (keyboard_port, keyboard);
+		gamepad_monitor.gamepad_plugged.connect (handle_gamepad_plugged);
 
 		core.variables_interface = options;
 		core.log_interface = log;
@@ -189,6 +198,49 @@ public class Games.RetroRunner : Object, Runner {
 
 		if (!try_load_game (core, uri))
 			throw new RetroError.INVALID_GAME_FILE (@"Invalid game file: $uri");
+	}
+
+	private void handle_gamepad_plugged (LibGamepad.Gamepad gamepad) {
+		if (!gamepad.mapped)
+			return;
+
+		// Plug this gamepad to the port where the keyboard was plugged as a last resort
+		var port = keyboard_port;
+		print (@"plugged $port\n");
+		gamepad.unplugged.connect (() => handle_gamepad_unplugged (port));
+		input.set_controller_device (keyboard_port, new RetroGamepad (gamepad));
+
+		// Assign keyboard to another unplugged port if exists and return
+		for (var i = keyboard_port; i < is_port_plugged.length; i++) {
+			if (!is_port_plugged[i]) {
+				// Found an unplugged port and so assigning keyboard to it
+				keyboard_port = i;
+				is_port_plugged[keyboard_port] = true;
+				input.set_controller_device (keyboard_port, keyboard);
+
+				return;
+			}
+		}
+
+		// Now it means that there is no unplugged port so append keyboard to ports
+		keyboard_port = is_port_plugged.length;
+		is_port_plugged += true;
+		input.set_controller_device (keyboard_port, keyboard);
+	}
+
+	private void handle_gamepad_unplugged (int port) {
+		print (@"unplugged $port\n");
+		if (keyboard_port > port) {
+			// Remove the controller and shift keyboard to "lesser" port
+			is_port_plugged[keyboard_port] = false;
+			input.remove_controller_device (keyboard_port);
+			keyboard_port = port;
+			input.set_controller_device (keyboard_port, keyboard);
+		} else {
+			// Just remove the controller as no need to shift keyboard
+			is_port_plugged[port] = false;
+			input.remove_controller_device (port);
+		}
 	}
 
 	private bool try_load_game (Retro.Core core, string uri) {
