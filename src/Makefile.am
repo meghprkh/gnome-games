@@ -71,6 +71,7 @@ gnome_games_SOURCES = \
 	\
 	retro/retro-error.vala \
 	retro/retro-gamepad.vala \
+	retro/retro-input-manager.vala \
 	retro/retro-log.vala \
 	retro/retro-runner.vala \
 	\
