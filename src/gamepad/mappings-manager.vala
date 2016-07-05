@@ -1,24 +1,15 @@
+// This file is part of GNOME Games. License: GPLv3
+
 /**
  * This class gives methods to set/update the mappings
  *
  * The client interfaces with this class primarily
  */
-public class LibGamepad.Mappings {
+public class LibGamepad.MappingsManager {
 	private static HashTable<string, string> names;
 	private static HashTable<string, string> mappings;
 
 	private static bool? inited;
-	private static void init_if_not () {
-		if (inited == null || inited == false) {
-			inited = true;
-			if (names == null)
-				names = new HashTable<string, string> (str_hash, str_equal);
-			if (mappings == null)
-				mappings = new HashTable<string, string> (str_hash, str_equal);
-			Mappings.add_from_resource ("/org/gnome/Games/gamepads/gamecontrollerdb.txt");
-		}
-	}
-
 
 	/**
 	 * Adds mappings from a file
@@ -93,5 +84,16 @@ public class LibGamepad.Mappings {
 	public static string? get_mapping (string guid) {
 		init_if_not ();
 		return mappings.get (guid);
+	}
+
+	private static void init_if_not () {
+		if (inited == null || inited == false) {
+			inited = true;
+			if (names == null)
+				names = new HashTable<string, string> (str_hash, str_equal);
+			if (mappings == null)
+				mappings = new HashTable<string, string> (str_hash, str_equal);
+			MappingsManager.add_from_resource ("/org/gnome/Games/gamepads/gamecontrollerdb.txt");
+		}
 	}
 }

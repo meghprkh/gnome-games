@@ -1,3 +1,5 @@
+// This file is part of GNOME Games. License: GPLv3
+
 private class LibGamepad.MappingHelpers {
 	public static InputType map_type (string str) {
 		switch (str) {

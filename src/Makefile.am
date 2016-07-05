@@ -53,17 +53,19 @@ gnome_games_SOURCES = \
 	dummy/dummy-icon.vala \
 	dummy/dummy-runner.vala \
 	\
-	gamepad/drivers/interface/raw-gamepad-monitor.vala \
-	gamepad/drivers/interface/raw-gamepad.vala \
-	gamepad/drivers/linux/guid-helpers.vala \
-	gamepad/drivers/linux/raw-gamepad-monitor.vala \
-	gamepad/drivers/linux/raw-gamepad.vala \
+	gamepad/raw-gamepad-monitor.vala \
+	gamepad/raw-gamepad.vala \
+	gamepad/linux/guid-helpers.vala \
+	gamepad/linux/raw-gamepad-monitor.vala \
+	gamepad/linux/raw-gamepad.vala \
 	gamepad/gamepad-monitor.vala \
 	gamepad/gamepad.vala \
 	gamepad/helpers.vala \
 	gamepad/input-type.vala \
+	gamepad/mapping-error.vala \
 	gamepad/mapping-helpers.vala \
-	gamepad/mappings.vala \
+	gamepad/mapping.vala \
+	gamepad/mappings-manager.vala \
 	gamepad/standard-gamepad-axis.vala \
 	gamepad/standard-gamepad-button.vala \
 	\
@@ -111,7 +113,7 @@ gnome_games_SOURCES = \
 
 gnome_games_VALAFLAGS = \
 	--target-glib=@GLIB_MIN_VERSION@ \
-	--vapidir=gamepad/drivers/linux/vapis/ \
+	--vapidir=gamepad/linux/ \
 	--pkg gio-2.0 \
 	--pkg glib-2.0 \
 	--pkg gtk+-3.0 \

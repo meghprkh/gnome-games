@@ -1,3 +1,5 @@
+// This file is part of GNOME Games. License: GPLv3
+
 [CCode (cheader_filename = "libevdev/libevdev.h")]
 namespace Libevdev {
 

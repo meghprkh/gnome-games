@@ -1,3 +1,5 @@
+// This file is part of GNOME Games. License: GPLv3
+
 namespace LibGamepad {
 	private const int GUID_LENGTH = 8;
 

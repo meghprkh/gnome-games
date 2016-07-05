@@ -1,3 +1,5 @@
+// This file is part of GNOME Games. License: GPLv3
+
 private class LibGamepad.LinuxGuidHelpers : Object {
 	public static string from_dev (Libevdev.Evdev dev) {
 		uint16 guid[8];

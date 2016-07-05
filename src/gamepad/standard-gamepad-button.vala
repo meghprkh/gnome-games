@@ -1,5 +1,7 @@
 // This file is part of GNOME Games. License: GPLv3
 
+// This file is part of GNOME Games. License: GPLv3
+
 public enum LibGamepad.StandardGamepadButton {
 	/**
 	 * The button at the bottom of the action pad.
