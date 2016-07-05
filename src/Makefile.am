@@ -73,6 +73,7 @@ gnome_games_SOURCES = \
 	retro/retro-gamepad.vala \
 	retro/retro-log.vala \
 	retro/retro-runner.vala \
+	retro/retro-input-manager.vala \
 	\
 	tracker/mime-type-tracker-query.vala \
 	tracker/tracker-game-source.vala \
