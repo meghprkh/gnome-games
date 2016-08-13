@@ -3,7 +3,7 @@
   <requires lib="gtk+" version="3.16"/>
   <template class="GamesGamepadSelectPopover" parent="GtkPopover">
     <child>
-      <object class="GtkStack" id="stack">
+      <object class="GtkStack" id="popover_stack">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="transition_type">slide-right</property>
@@ -12,27 +12,22 @@
         <property name="margin-start">21</property>
         <property name="margin-end">21</property>
         <child>
-          <object class="GtkListBox" id="list_box1">
+          <object class="GtkListBox" id="player_list">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="tooltip_text" translatable="yes">Select a player</property>
             <property name="selection_mode">none</property>
           </object>
           <packing>
-            <property name="name">page0</property>
-            <property name="title" translatable="yes">page0</property>
           </packing>
         </child>
         <child>
-          <object class="GtkListBox" id="list_box2">
+          <object class="GtkListBox" id="gamepad_list">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="tooltip_text" translatable="yes">Select your gamepad device. You can also press a button on your gamepad to select it.</property>
           </object>
           <packing>
-            <property name="name">page1</property>
-            <property name="title" translatable="yes">page1</property>
-            <property name="position">1</property>
           </packing>
         </child>
       </object>

@@ -7,11 +7,11 @@ private enum Games.GamepadSelectPopoverState {
 [GtkTemplate (ui = "/org/gnome/Games/ui/gamepad-select-popover.ui")]
 private class Games.GamepadSelectPopover : Gtk.Popover {
 	[GtkChild]
-	private Gtk.ListBox list_box1;
+	private Gtk.ListBox player_list;
 	[GtkChild]
-	private Gtk.ListBox list_box2;
+	private Gtk.ListBox gamepad_list;
 	[GtkChild]
-	private Gtk.Stack stack;
+	private Gtk.Stack popover_stack;
 
 	public string[] gamepads;
 	public int[] associations;
@@ -23,58 +23,63 @@ private class Games.GamepadSelectPopover : Gtk.Popover {
 		gamepads = gamepad_c;
 		associations = association_c;
 
-		this.destroy.connect(() => {
-			print(@"\n\nAssociations : $(associations.length)\n");
-			for (var i = 0; i < associations.length; i++) {
-				print(@"Player $(i+1) - $(associations[i]) - $(gamepads[associations[i]])\n");
-			}
+		this.destroy.connect (() => {
+			print (@"\n\nAssociations : $(associations.length)\n");
+			for (var i = 0; i < associations.length; i++)
+				print (@"Player $(i+1) - $(associations[i]) - $(gamepads[associations[i]])\n");
 		});
 
-		foreach (var gamepad in gamepads) {
-			list_box2.add(new Gtk.Label(gamepad));
-		}
+		foreach (var gamepad in gamepads)
+			gamepad_list.add (new Gtk.Label (gamepad));
 
 		for (var i = 0; i < associations.length; i++) {
-			var button = new Gtk.Button.with_label(get_player_string(i));
-			var i_copy = i;
-			button.clicked.connect(() => change_state(GamepadSelectPopoverState.CHOSE_GAMEPAD, i_copy));
-			list_box1.add(new Gtk.Label(get_player_string(i)));
+			player_list.add (new Gtk.Label (""));
+			update_player_string (i);
 		}
 
-		list_box1.row_activated.connect((row) => {
-			var player = row.get_index();
-			change_state(GamepadSelectPopoverState.CHOSE_GAMEPAD, player);
+		player_list.row_activated.connect ((row) => {
+			var player = row.get_index ();
+			change_state (GamepadSelectPopoverState.CHOSE_GAMEPAD, player);
 		});
-		list_box2.row_selected.connect(() => change_state (GamepadSelectPopoverState.CHOSE_PLAYER));
-		list_box1.show_all ();
-		list_box2.show_all ();
+
+		gamepad_list.row_selected.connect (() => change_state (GamepadSelectPopoverState.CHOSE_PLAYER));
+		player_list.show_all ();
+		gamepad_list.show_all ();
 	}
 
-	private string get_player_string (int player) {
-		return @"#$(player+1) - $(gamepads[associations[player]])";
+	private void update_player_string (int player) {
+		var label = (Gtk.Label) player_list.get_row_at_index (player).get_child ();
+		label.label = @"#$(player+1) - $(gamepads[associations[player]])";
 	}
 
 	private void change_state (GamepadSelectPopoverState to, int player = -1) {
 		if (to == state) return;
 		switch (to) {
 		case GamepadSelectPopoverState.CHOSE_PLAYER:
-			var associate_to = list_box2.get_selected_row().get_index();
-			print(@"Row changed $active_player - $associate_to!\n");
-			int other = -1;
+			var associate_to = gamepad_list.get_selected_row ().get_index ();
+			print (@"Row changed $active_player - $associate_to!\n");
+			int other_player = -1;
 			for (var i = 0; i < associations.length; i++) {
-				if (associations[i] == associate_to) { other = i; break; }
+				if (associations[i] == associate_to) {
+					other_player = i;
+
+					break;
+				}
 			}
-			if (other != -1) associations[other] = associations[active_player];
+			if (other_player != -1)
+				associations[other_player] = associations[active_player];
 			associations[active_player] = associate_to;
-			((Gtk.Label) list_box1.get_row_at_index(active_player).get_child()).label = get_player_string(active_player);
-			((Gtk.Label) list_box1.get_row_at_index(other).get_child()).label = get_player_string(other);
-			stack.transition_type = Gtk.StackTransitionType.SLIDE_RIGHT;
-			stack.set_visible_child(list_box1);
+			update_player_string (active_player);
+			update_player_string (other_player);
+			popover_stack.transition_type = Gtk.StackTransitionType.SLIDE_RIGHT;
+			popover_stack.set_visible_child (player_list);
+
 			break;
 		case GamepadSelectPopoverState.CHOSE_GAMEPAD:
-			list_box2.select_row(list_box2.get_row_at_index(associations[player]));
-			stack.transition_type = Gtk.StackTransitionType.SLIDE_LEFT;
-			stack.set_visible_child(list_box2);
+			gamepad_list.select_row (gamepad_list.get_row_at_index (associations[player]));
+			popover_stack.transition_type = Gtk.StackTransitionType.SLIDE_LEFT;
+			popover_stack.set_visible_child (gamepad_list);
+
 			break;
 		}
 		state = to;
