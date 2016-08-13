@@ -4,6 +4,16 @@
 private class Games.DisplayHeaderBar : Gtk.HeaderBar {
 	public signal void back ();
 
+	[GtkChild]
+	private Gtk.MenuButton _display_discs;
+	public Gtk.MenuButton display_discs {
+		get {
+			return _display_discs;
+		}
+	}
+
+	private Gtk.Image displayed_image;
+
 	public string game_title {
 		set { title = value; }
 	}

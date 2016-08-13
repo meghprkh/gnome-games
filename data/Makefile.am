@@ -16,6 +16,7 @@ EXTRA_DIST = \
 	gtk/menus.ui \
 	ui/dummy-display.ui \
 	ui/empty-collection.ui \
+	ui/gamepad-select-popover.ui \
 	ui/header-bar.ui \
 	ui/quit-dialog.ui \
 	ui/remote-display.ui \

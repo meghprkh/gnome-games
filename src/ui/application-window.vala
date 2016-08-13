@@ -68,6 +68,8 @@ private class Games.ApplicationWindow : Gtk.ApplicationWindow {
 	[GtkChild]
 	private DisplayHeaderBar display_header_bar;
 
+	private GamepadSelectPopover gamepad_select_popover;
+
 	private Binding box_search_binding;
 	private Binding box_fullscreen_binding;
 	private Binding header_bar_search_binding;
@@ -94,6 +96,15 @@ private class Games.ApplicationWindow : Gtk.ApplicationWindow {
 		                                        BindingFlags.BIDIRECTIONAL);
 		header_bar_fullscreen_binding = bind_property ("is-fullscreen", display_header_bar, "is-fullscreen",
 		                                               BindingFlags.BIDIRECTIONAL);
+
+		prepare_popover ();
+	}
+
+	public void prepare_popover () {
+		gamepad_select_popover = new GamepadSelectPopover ({"Logitech gamepad", "RetroPad", "PS4", "Keyboard"}, {1, 0, 2, 3});
+		gamepad_select_popover.set_relative_to (display_header_bar.display_discs);
+		display_header_bar.display_discs.set_popover (gamepad_select_popover);
+		display_header_bar.display_discs.show ();
 	}
 
 	public void run_game (Game game) {

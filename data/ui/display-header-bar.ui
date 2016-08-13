@@ -31,6 +31,24 @@
       </object>
     </child>
     <child>
+      <object class="GtkMenuButton" id="_display_discs">
+        <property name="visible">True</property>
+        <property name="valign">center</property>
+        <property name="use-underline">True</property>
+        <style>
+          <class name="image-button"/>
+        </style>
+        <child internal-child="accessible">
+          <object class="AtkObject" id="a11y-display-discs">
+            <property name="accessible-name" translatable="yes">Discs</property>
+          </object>
+        </child>
+      </object>
+      <packing>
+        <property name="pack-type">end</property>
+      </packing>
+    </child>
+    <child>
       <object class="GtkButton" id="fullscreen">
         <property name="visible">False</property>
         <property name="valign">center</property>
